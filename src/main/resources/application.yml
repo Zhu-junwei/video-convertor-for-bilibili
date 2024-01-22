@@ -1,0 +1,7 @@
+convert:
+  ffmpeg-path: D:/ffmpeg/bin/ffmpeg.exe
+  video-input-path: F:/682703844
+  video-out-path: F:/合并
+  prefix-format:            #文件名前缀格式化
+    add-prefix-num: true    #添加数字前缀
+    mini-digits: 3          #设置数字编号的位数
