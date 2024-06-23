@@ -2,11 +2,15 @@ package com.zjw.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * @author 朱俊伟
  * @since 2024/01/22 21:27
  */
+@Component
+@EnableConfigurationProperties(ConvertProperties.class)
 @ConfigurationProperties(prefix = "convert")
 @Data
 public class ConvertProperties {
