@@ -46,7 +46,7 @@ public class BiliBili {
     private int spid;
     private int seasion_id;
     private String bvid;
-    private int owner_id;
+    private long owner_id;
     private PageDataBean page_data;
 
     public int getMedia_type() {
@@ -209,11 +209,11 @@ public class BiliBili {
         this.bvid = bvid;
     }
 
-    public int getOwner_id() {
+    public long getOwner_id() {
         return owner_id;
     }
 
-    public void setOwner_id(int owner_id) {
+    public void setOwner_id(long owner_id) {
         this.owner_id = owner_id;
     }
 
