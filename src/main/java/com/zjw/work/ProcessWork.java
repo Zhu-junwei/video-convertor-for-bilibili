@@ -1,9 +1,10 @@
 package com.zjw.work;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zjw.config.ConvertProperties;
 import com.zjw.domain.VideoInfo;
 import com.zjw.system.ProcesInfo;
-import com.zjw.utils.BiBiUtils;
+import com.zjw.utils.Butils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -44,9 +45,12 @@ public class ProcessWork {
             // 创建线程池
             ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-            for (VideoInfo videoInfo : videoInfoList) {
+            for (int i = 0; i < videoInfoList.size(); i++) {
+                final int index = i;
                 executorService.submit(() -> {
                     try {
+                        VideoInfo videoInfo = videoInfoList.get(index);
+                        log.info("{}/{}\t{}", index + 1, videoInfoList.size(), videoInfo.getVideoName());
                         // 执行音频视频合并方法
                         convertor(videoInfo.getVideoInputPath(), videoInfo.getAudioInputPath(), videoInfo.getVideoName());
                     } catch (Exception e) {
@@ -89,13 +93,13 @@ public class ProcessWork {
      * @param videoName      合并后文件名字
      */
     public void convertor(String videoInputPath, String audioInputPath, String videoName) throws Exception {
-        log.info(videoName);
         Process process = getProcess(videoInputPath, audioInputPath, videoName);
 
         try (InputStream errorStream = process.getErrorStream();
              InputStreamReader inputStreamReader = new InputStreamReader(errorStream);
              BufferedReader br = new BufferedReader(inputStreamReader)) {
-            while (br.readLine() != null) {}
+            while (br.readLine() != null) {
+            }
         } catch (IOException e) {
             log.error("Error executing ffmpeg command for video: {}. Error: {}", videoName, e.getMessage());
         }
@@ -152,16 +156,16 @@ public class ProcessWork {
         ProcesInfo.totalVideoNum = videoInfoList.size();
     }
 
-    public String getFileName(String fileJson) {
+    public String getFileName(String fileJson) throws JsonProcessingException {
         String fileName;
         if (convertProperties.getPrefixFormat().getAddPrefixNum()) {
             int miniDigits = Objects.requireNonNullElse(
                     convertProperties.getPrefixFormat().getMiniDigits(),
                     String.valueOf(videoInfoList.size()).length()
             );
-            fileName = fill(BiBiUtils.getVideoIndex(fileJson), miniDigits, Byte.MAX_VALUE) + "_" + BiBiUtils.getVideoName(fileJson) + ".mp4";
+            fileName = fill(Butils.getVideoIndex(fileJson), miniDigits, Byte.MAX_VALUE) + "_" + Butils.getVideoName(fileJson) + ".mp4";
         } else {
-            fileName = BiBiUtils.getVideoName(fileJson) + ".mp4";
+            fileName = Butils.getVideoName(fileJson) + ".mp4";
         }
         return fileName;
     }
